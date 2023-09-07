@@ -6,7 +6,9 @@ import { errorToast } from 'src/utils/toast'
 const axiosInstance = axios.create({
   // baseURL: 'http://localhost:3100'
 
-  baseURL: 'http://16.171.39.169:3100'
+  // baseURL: 'http://16.171.39.169:3100'
+
+  baseUrl: 'https://api.inventorysolutions.in'
 
 })
 
