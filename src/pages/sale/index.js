@@ -37,7 +37,7 @@ import Select from '@mui/material/Select'
 import Autocomplete from '@mui/material/Autocomplete'
 import moment from 'moment/moment';
 
-const MUITable = ({ editPurchase, type }) => {
+const Sale = ({ editPurchase, type }) => {
 
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState([]);
@@ -65,13 +65,16 @@ const MUITable = ({ editPurchase, type }) => {
   const [party, setParty] = useState("");
   const [invoiceError, setInvoiceError] = useState(false);
   const [partyError, setPartyError] = useState(false);
+  const [addressError, setAddressError] = useState(false);
+  const [contactNoError, setContactNoError] = useState(false);
   const [error, setError] = useState(false);
   const [dateError, setDateError] = useState(false);
   const [filteredData, setFilteredData] = useState([])
   const [parties, setParties] = useState([]);
   const [date, setDate] = useState(moment().format("YYYY-MM-DD"));
   const [selectedParty, setSelectedParty] = useState(null);
-
+  const [address, setAddress] = useState("");
+  const [contactNo, setContactNo] = useState("");
 
   useEffect(() => {
     if (editPurchase) {
@@ -126,7 +129,7 @@ const MUITable = ({ editPurchase, type }) => {
 
   const handleSubmit = () => {
 
-    if (!invoice || !party || !date) {
+    if (!invoice || !party || !date || !address || !contactNo) {
       if (!invoice) {
         setInvoiceError(true);
       }
@@ -136,12 +139,20 @@ const MUITable = ({ editPurchase, type }) => {
       if (!date) {
         setDateError(true);
       }
+      if (!address) {
+        setAddressError(true);
+      }
+      if (!contactNo) {
+        setContactNoError(true);
+      }
 
       return;
     }
     setInvoiceError(false);
     setPartyError(false);
     setDateError(false);
+    setAddressError(false);
+    setContactNoError(false);
     setError(false);
 
     products.forEach(p => {
@@ -301,6 +312,8 @@ const MUITable = ({ editPurchase, type }) => {
   const handlePartyChange = (party) => {
     setParty(party?._id)
     setSelectedParty(party);
+    setAddress(party?.address);
+    setContactNo(party?.contactNo)
   }
 
 
@@ -406,14 +419,30 @@ const MUITable = ({ editPurchase, type }) => {
                 <TextField
                   variant="standard"
                   fullWidth
-                  disabled
                   required
-                  name='invoice'
-                  error={invoiceError}
+                  name='address'
+                  error={addressError}
                   type='text'
-                  placeholder="Enter Challan No"
-                  value={selectedParty?.address}
-                  onChange={(e) => setInvoice(e.target.value)}
+                  placeholder="Enter Address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </Grid>
+
+              <Grid item xs={2}>
+                <label>Contact No : </label>
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  variant="standard"
+                  fullWidth
+                  required
+                  name='contactNo'
+                  error={contactNoError}
+                  type='text'
+                  placeholder="Enter Contact No"
+                  value={contactNo}
+                  onChange={(e) => setContactNo(e.target.value)}
                 />
               </Grid>
 
@@ -552,4 +581,4 @@ const MUITable = ({ editPurchase, type }) => {
   )
 }
 
-export default withAuth(MUITable)
+export default withAuth(Sale)

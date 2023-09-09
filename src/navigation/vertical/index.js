@@ -34,12 +34,17 @@ const navigation = () => {
       path: '/stock-details'
     },
 
+    {
+      title: 'Purchase',
+      icon: Table,
+      path: '/purchase'
+    },
 
-    // {
-    //   title: 'Sell',
-    //   icon: Table,
-    //   path: '/sell'
-    // },
+    {
+      title: 'Sale',
+      icon: Table,
+      path: '/sale'
+    },
     {
       sectionTitle: 'Masters'
     },
