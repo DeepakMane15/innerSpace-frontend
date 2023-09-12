@@ -12,7 +12,6 @@ const axiosInstance = axios.create({
 
 })
 
-console.log("sdfsdf " + axiosInstance.defaults.baseURL);
 
 axiosInstance.interceptors.request.use(
   config => {

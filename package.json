@@ -4,18 +4,10 @@
   "license": "MIT",
   "version": "1.0.0",
   "author": {
-    "name": "ThemeSelection",
-    "url": "https://themeselection.com/"
+    "name": "InventorySolutions"
   },
-  "bugs": {
-    "url": "https://github.com/themeselection/materio-mui-react-nextjs-admin-template-free/issues"
-  },
+
   "private": false,
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/themeselection/materio-mui-react-nextjs-admin-template-free.git"
-  },
-  "homepage": "https://themeselection.com/products/materio-free-mui-react-nextjs-admin-template/",
   "keywords": [
     "react",
     "javascript",
