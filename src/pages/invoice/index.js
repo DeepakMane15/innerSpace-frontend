@@ -122,41 +122,6 @@ const Purchase = () => {
     fetch();
   }, [])
 
-  async function generateInvoice1() {
-    try {
-      // window.location.origin
-      setDownloadingToaster(true);
-
-      const response = await axiosInstance.post('/transaction/download-invoice', { name: "Deepak" }, {
-        responseType: 'arraybuffer',
-      });
-
-      // if (!response.ok) {
-      //   throw new Error('API request failed');
-      // }
-      console.log(response.data);
-
-      // const pdfBlob = await response.data.blob();
-      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-
-      console.log(pdfBlob);
-
-      // Convert Blob to ArrayBuffer
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      const link = document.createElement('a');
-      link.style.display = 'none';
-      link.href = pdfUrl;
-      link.download = 'invoice.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-    }
-    setDownloadingToaster(false);
-  }
-
   async function generateInvoice(challanNo) {
     try {
       setDownloadingToaster(true);
@@ -165,11 +130,6 @@ const Purchase = () => {
         responseType: 'arraybuffer',
       });
 
-      // if (!response.ok) {
-      //   throw new Error('API request failed');
-      // }
-
-      // const pdfBlob = await response.data.blob();
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
 
       console.log(pdfBlob);
@@ -189,6 +149,21 @@ const Purchase = () => {
     }
     setDownloadingToaster(false);
 
+  }
+
+  const deleteInvoice = (id) => {
+    try {
+      axiosInstance.get("transaction/deleteTransaction/" + id)
+        .then(res => {
+          fetch();
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    catch (err) {
+      console.log(err)
+    }
   }
 
   if (!data) return <FallbackSpinner />
@@ -308,7 +283,7 @@ const Purchase = () => {
                       </TableCell> */}
                       <TableCell key={data.id} align="left" >
                         <HiOutlineDownload color="#9155FD" size="20px" style={{ cursor: "pointer" }} onClick={() => generateInvoice(d.invoiceNo)} />
-                        <AiFillDelete color="#ff4747" size="20px" style={{ cursor: "pointer", marginLeft: "10px" }} />
+                        <AiFillDelete color="#ff4747" size="20px" style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => deleteInvoice(d.id)} />
 
                       </TableCell>
 

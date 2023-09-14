@@ -68,7 +68,7 @@ const Detail = (props) => {
     <Grid container spacing={6}>
       <Grid item xs={12}>
         <Card>
-          <Button variant="outlined" onClick={() => router.push('/purchase')}>
+          <Button variant="outlined" onClick={() => router.push('/invoice')}>
             Go Back
           </Button>
           <CardHeader title={'Invoice Details - ' + data?.id} titleTypographyProps={{ variant: 'h6' }} />

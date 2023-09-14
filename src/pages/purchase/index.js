@@ -37,6 +37,10 @@ import Select from '@mui/material/Select'
 import Autocomplete from '@mui/material/Autocomplete'
 import moment from 'moment/moment';
 
+const escapeRegExp = value => {
+  return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+}
+
 const Purchase = ({ editPurchase, type }) => {
 
   const [data, setData] = useState([]);
