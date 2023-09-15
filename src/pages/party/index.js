@@ -193,7 +193,7 @@ const Party = () => {
         </Card>
       </Grid>
 
-      <AddOrEditParty open={open} setErrorToaster={setErrorToaster} handleClickOpen={handleClickOpen} setEditParty={setEditParty} editParty={editParty} handleClose={handleClose} handleOpenToaster={handleOpenToaster} fetch={fetch} />
+      <AddOrEditParty open={open} setErrorToaster={setErrorToaster} setToaster={setToaster} handleClickOpen={handleClickOpen} setEditParty={setEditParty} editParty={editParty} handleClose={handleClose} handleOpenToaster={handleOpenToaster} fetch={fetch} />
       <DeleteModal deleteItem={deleteItem} handleClose={handleClose} deleteProduct={deleteProduct} type='Party' />
 
     </Grid>
