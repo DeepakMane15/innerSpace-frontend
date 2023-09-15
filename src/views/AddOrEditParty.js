@@ -22,7 +22,7 @@ import axiosInstance from 'src/hoc/axios';
 
 
 
-const AddOrEditParty = ({ open, setOpen, setErrorToaster, handleClickOpen, handleClose, handleOpenToaster, fetch, setEditParty, editParty }) => {
+const AddOrEditParty = ({ open, setOpen, setToaster, setErrorToaster, handleClickOpen, handleClose, handleOpenToaster, fetch, setEditParty, editParty }) => {
 
   const [name, setName] = useState("");
   const [gstNo, setGstNo] = useState("");
@@ -106,9 +106,11 @@ const AddOrEditParty = ({ open, setOpen, setErrorToaster, handleClickOpen, handl
       (open ? axiosInstance.post("client", data) : axiosInstance.put("client/update", data))
         .then(res => {
           if (res.data.status === 200) {
+            setToaster(res.data.message);
             reset();
             handleClose();
-            handleOpenToaster();
+
+            // handleOpenToaster();
             fetch();
           } else {
             setErrorToaster(true);

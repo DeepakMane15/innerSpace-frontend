@@ -190,17 +190,19 @@ const Purchase = () => {
           See {type ? "Sell" : "Purchase"} Data
         </Button> */}
         <Card>
-          <div style={{display:'flex'}}>
-          <CardHeader title='Invoices' titleTypographyProps={{ variant: 'h6' }} />
+          {/* <CardHeader title='Invoices' titleTypographyProps={{ variant: 'h6' }} /> */}
 
           {/* <Button variant="outlined" onClick={() => handleClickOpen(1)}>
             Add Purchase
           </Button>
+
           <Button variant="outlined" onClick={() => handleClickOpen(0)}>
             Add Sell
           </Button> */}
 
-          <FormControl sx={{ float: 'right', right:0 }}>
+          <Typography variant='h6' sx={{padding:2}}>Invoices</Typography>
+
+          <FormControl sx={{ float: 'right',marginTop:-4 }}>
             <TextField
               size='small'
               value={searchValue}
@@ -231,7 +233,6 @@ const Purchase = () => {
               }}
             />
           </FormControl>
-          </div>
           {/* <TableStickyHeader setEditStock={setEditStock}  editStock={editStock} data={data} /> */}
 
           <Paper sx={{ width: '100%', overflow: 'hidden' }}>
