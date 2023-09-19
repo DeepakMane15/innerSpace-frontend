@@ -348,7 +348,7 @@ export default async function handler(req, res) {
     // send the result to the client
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=${challan.invoiceNo}.pdf`);
+    res.setHeader('Content-Disposition', `attachment; filename=${challan[0].invoiceNo}.pdf`);
     res.send(pdf);
 
   }
