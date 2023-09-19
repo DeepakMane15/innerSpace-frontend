@@ -1,26 +1,38 @@
 import fs from 'fs';
 
-// import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer';
 import handlers from 'handlebars';
 
 // import puppeteer from 'puppeteer-core';
 // import chromium from '@sparticuz/chromium';
 // const test = require("node:test");
-const puppeteer = require("puppeteer-core");
+// const puppeteer = require("puppeteer-core");
 const chromium = require("@sparticuz/chromium");
-
-
 
 export default async function handler(req, res) {
   const { challan } = req.body;
 
-  // console.log(challan);
-
-  // return;
-
   try {
-    // read our invoice-template.html file using node fs module
-    // const file = fs.readFileSync('./src/views/template/invoice-template.html', 'utf8');
+
+    const products = challan.map((product, index) => (
+      ` <tr key=${index}>
+          <td style="text-align: center;">
+            ${index + 1}
+          </td>
+          <td style="width: 380px; padding-left:10px; ${index === challan.length - 1 ? null : 'height:10px'} ">
+          ${product.name}
+          </td>
+          <td style="width: 60px; text-align: center;">
+            ${product.packingType}
+          </td>
+          <td style="width: 60px; text-align: center;">
+            ${product.quantity}
+          </td>
+          <td style="width: 60px; text-align: center;">
+          </td>
+        </tr>
+        `
+    ))
 
     const file = `
     <!DOCTYPE html>
@@ -220,7 +232,6 @@ export default async function handler(req, res) {
       </div>
       <!-- sr table columns -->
       <div style="font-size: 13px; color:black;">
-
         <table cellpadding="0" cellspacing="0">
           <thead>
             <tr class="top" style="border-bottom: 1px solid black;">
@@ -242,28 +253,7 @@ export default async function handler(req, res) {
             </tr>
           </thead>
           <tbody>
-          ${challan.map(product => (
-      `
-            <tr>
-            <td style="text-align: center;">
-              1
-            </td>
-            <td style="width: 380px;">
-              SS304 Slider Lock
-            </td>
-            <td style="width: 60px; text-align: center;">
-              No
-            </td>
-            <td style="width: 60px; text-align: center;">
-              77.00
-            </td>
-            <td style="width: 60px; text-align: center;">
-
-            </td>
-          </tr>
-          `
-    ))}
-
+           ${products.join('')}
 
           </tbody>
         </table>
@@ -313,14 +303,13 @@ export default async function handler(req, res) {
     // Optional: If you'd like to disable webgl, true is the default.
     chromium.setGraphicsMode = false;
 
-
     const template = handlers.compile(`${file}`);
 
     const logo = protocol + '://' + host + '/images/logos/Picture.png';
     const kb = protocol + '://' + host + '/images/logos/kb.png';
     const tline = protocol + '://' + host + '/images/logos/tline.png';
 
-    const html = template({ challan, logo, tline, kb });
+    const html = template({ challan, logo, tline, kb, products });
 
     // simulate a chrome browser with puppeteer and navigate to a new page
     // const browser = await puppeteer.launch();
@@ -328,12 +317,14 @@ export default async function handler(req, res) {
     // const browser = await puppeteer.launch({
     //   executablePath: puppeteer.executablePath(),
     // });
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-    });
+    // const browser = await puppeteer.launch({
+    //   args: chromium.args,
+    //   defaultViewport: chromium.defaultViewport,
+    //   executablePath: await chromium.executablePath(),
+    //   headless: chromium.headless,
+    // });
+
+    const browser = await puppeteer.launch();
 
     const page = await browser.newPage();
 
