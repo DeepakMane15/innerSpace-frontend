@@ -55,7 +55,7 @@ const Purchase = () => {
   const [downloadingToaster, setDownloadingToaster] = useState(false);
   const [searchValue, setSearchValue] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
-  const [allInvoices,setAllInvoices] = useState([]);
+  const [allInvoices, setAllInvoices] = useState([]);
 
   const [addPurchase, setAddPurchase] = useState(false);
 
@@ -143,7 +143,7 @@ const Purchase = () => {
       const link = document.createElement('a');
       link.style.display = 'none';
       link.href = pdfUrl;
-      link.download = `${challanNo}.pdf`;
+      link.download = `${challan[0].invoiceNo}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -204,9 +204,9 @@ const Purchase = () => {
             Add Sell
           </Button> */}
 
-          <Typography variant='h6' sx={{padding:2}}>Invoices</Typography>
+          <Typography variant='h6' sx={{ padding: 2 }}>Invoices</Typography>
 
-          <FormControl sx={{ float: 'right',marginTop:-4 }}>
+          <FormControl sx={{ float: 'right', marginTop: -4 }}>
             <TextField
               size='small'
               value={searchValue}
