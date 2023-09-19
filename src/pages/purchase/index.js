@@ -179,7 +179,9 @@ const Purchase = ({ editPurchase, type }) => {
 
           // type: type ? "purchase" : "sell",
           type: 'purchase',
-          invoiceDate: date
+          invoiceDate: date,
+          address: address,
+          contactNo: contactNo
         }
         axiosInstance.post("transaction", data)
           .then(res => {

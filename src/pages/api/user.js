@@ -12,7 +12,11 @@ const chromium = require("@sparticuz/chromium");
 
 
 export default async function handler(req, res) {
-  const { challanNo } = req.body;
+  const { challan } = req.body;
+
+  // console.log(challan);
+
+  // return;
 
   try {
     // read our invoice-template.html file using node fs module
@@ -238,23 +242,28 @@ export default async function handler(req, res) {
             </tr>
           </thead>
           <tbody>
+          ${challan.map(product => (
+      `
             <tr>
-              <td style="text-align: center;">
-                1
-              </td>
-              <td style="width: 380px;">
-                SS304 Slider Lock
-              </td>
-              <td style="width: 60px; text-align: center;">
-                No
-              </td>
-              <td style="width: 60px; text-align: center;">
-                77.00
-              </td>
-              <td style="width: 60px; text-align: center;">
+            <td style="text-align: center;">
+              1
+            </td>
+            <td style="width: 380px;">
+              SS304 Slider Lock
+            </td>
+            <td style="width: 60px; text-align: center;">
+              No
+            </td>
+            <td style="width: 60px; text-align: center;">
+              77.00
+            </td>
+            <td style="width: 60px; text-align: center;">
 
-              </td>
-            </tr>
+            </td>
+          </tr>
+          `
+    ))}
+
 
           </tbody>
         </table>
@@ -311,7 +320,7 @@ export default async function handler(req, res) {
     const kb = protocol + '://' + host + '/images/logos/kb.png';
     const tline = protocol + '://' + host + '/images/logos/tline.png';
 
-    const html = template({ challanNo, logo, tline, kb });
+    const html = template({ challan, logo, tline, kb });
 
     // simulate a chrome browser with puppeteer and navigate to a new page
     // const browser = await puppeteer.launch();
@@ -339,7 +348,7 @@ export default async function handler(req, res) {
     // send the result to the client
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=${challanNo}.pdf`);
+    res.setHeader('Content-Disposition', `attachment; filename=${challan.invoiceNo}.pdf`);
     res.send(pdf);
 
   }

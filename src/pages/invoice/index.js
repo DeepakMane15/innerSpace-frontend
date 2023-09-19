@@ -55,6 +55,7 @@ const Purchase = () => {
   const [downloadingToaster, setDownloadingToaster] = useState(false);
   const [searchValue, setSearchValue] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
+  const [allInvoices,setAllInvoices] = useState([]);
 
   const [addPurchase, setAddPurchase] = useState(false);
 
@@ -103,6 +104,7 @@ const Purchase = () => {
       axiosInstance.get("transaction/get")
         .then(res => {
           console.log(res.data.data)
+          setAllInvoices(res.data.data);
 
           const arrayUniqueById = [...new Map(res.data.data.map(item =>
             [item['invoiceNo'], item])).values()];
@@ -122,11 +124,13 @@ const Purchase = () => {
     fetch();
   }, [])
 
-  async function generateInvoice(challanNo) {
+  async function generateInvoice(invoiceId) {
     try {
       setDownloadingToaster(true);
 
-      const response = await axios.post(window.location.protocol + '//' + window.location.host + '/api/user', { challanNo: challanNo }, {
+      const challan = allInvoices.filter(invoice => invoice.id === invoiceId);
+
+      const response = await axios.post(window.location.protocol + '//' + window.location.host + '/api/user', { challan }, {
         responseType: 'arraybuffer',
       });
 
@@ -283,7 +287,7 @@ const Purchase = () => {
                         <MdModeEditOutline color="#9155FD" size="20px" style={{ cursor: "pointer" }} onClick={(e) => generateInvoice(e)} />
                       </TableCell> */}
                       <TableCell key={data.id} align="left" >
-                        <HiOutlineDownload color="#9155FD" size="20px" style={{ cursor: "pointer" }} onClick={() => generateInvoice(d.invoiceNo)} />
+                        <HiOutlineDownload color="#9155FD" size="20px" style={{ cursor: "pointer" }} onClick={() => generateInvoice(d.id)} />
                         <AiFillDelete color="#ff4747" size="20px" style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => deleteInvoice(d.id)} />
 
                       </TableCell>
