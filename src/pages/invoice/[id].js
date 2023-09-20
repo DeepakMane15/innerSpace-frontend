@@ -47,7 +47,7 @@ const Detail = (props) => {
       axiosInstance.get(`transaction/get/${id}`)
         .then(res => {
           if (res.data.status === 200 && res.data.data) {
-            console.log("[id] ",res.data.data)
+            console.log("[id] ", res.data.data)
             setData(res.data.data);
           } else {
             router.push('/purchase')
@@ -78,7 +78,7 @@ const Detail = (props) => {
                 <Typography>Date : </Typography>
               </Grid>
               <DemoGrid item xs={6} sm={4}>
-                <Typography variant='subtitle1' sx={{ marginBottom: 2, alignItems:'left' }}>
+                <Typography variant='subtitle1' sx={{ marginBottom: 2, alignItems: 'left' }}>
                   {data?.invoiceDate?.slice(0, 10)}
                 </Typography>
               </DemoGrid>
@@ -150,16 +150,13 @@ const Detail = (props) => {
                     <TableHead>
                       <TableRow>
                         <TableCell align="left" sx={{ minWidth: 100 }}>
-                          Name
+                          Category
                         </TableCell>
                         <TableCell align="left" sx={{ minWidth: 100 }}>
                           Code
                         </TableCell>
                         <TableCell align="left" sx={{ minWidth: 100 }}>
-                          Category
-                        </TableCell>
-                        <TableCell align="left" sx={{ minWidth: 100 }}>
-                          Sub-Category
+                          Name
                         </TableCell>
                         <TableCell align="left" sx={{ minWidth: 100 }}>
                           Size
@@ -175,16 +172,13 @@ const Detail = (props) => {
 
                         <TableRow hover role='checkbox' tabIndex={-1} key={p._id}>
                           <TableCell key={data._id} align="left">
-                            {p?.productId?.name}
+                            {p?.productId?.subCategoryId?.categoryId?.name}
                           </TableCell>
                           <TableCell key={data.id} align="left">
                             {p?.productId?.code}
                           </TableCell>
                           <TableCell key={data.id} align="left">
-                            {p?.productId?.subCategoryId?.categoryId?.name}
-                          </TableCell>
-                          <TableCell key={data.id} align="left">
-                            {p?.productId?.subCategoryId?.name}
+                            {p?.productId?.name}
                           </TableCell>
                           <TableCell key={data.id} align="left">
                             {p?.productId?.size}
