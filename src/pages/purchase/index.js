@@ -5,27 +5,23 @@ import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper'
+import Table from '@mui/material/Table'
+import TableRow from '@mui/material/TableRow'
+import TableHead from '@mui/material/TableHead'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
 
 // ** Demo Components Imports
-import TableBasic from 'src/views/tables/TableBasic'
-import TableDense from 'src/views/tables/TableDense'
-import TableSpanning from 'src/views/tables/TableSpanning'
-import TableCustomized from 'src/views/tables/TableCustomized'
-import TableCollapsible from 'src/views/tables/TableCollapsible'
-import TableStickyHeader from 'src/views/tables/TableStickyHeader'
+
 import { useEffect } from 'react'
 import axios from 'axios'
 import { useState } from 'react'
-import { Alert, Button, Snackbar } from '@mui/material'
-import AddOrEditPurchase from 'src/views/AddorEditPurchase'
+import { Alert, Button, Divider, Snackbar } from '@mui/material'
 import withAuth from 'src/hoc/withAuth'
 import axiosInstance from 'src/hoc/axios'
 
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import { MdModeEditOutline } from 'react-icons/md'
 import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { AiFillDelete } from 'react-icons/ai'
@@ -48,20 +44,11 @@ const Purchase = ({ editPurchase, type }) => {
 
   const [toaster, setToaster] = useState(false);
   const [editStock, setEditStock] = useState(null);
-
-
   const [open, setOpen] = useState(false);
-
-
-
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
-  const [products, setProducts] = useState([{ category: undefined, code: undefined, productId: undefined, quantity: undefined, filteredData: [] }]);
-
+  const [products, setProducts] = useState([]);
   const [productMaster, setProductMaster] = useState([]);
-
-  // const categories = ['instant', 'odd']
-
   const [categories, setCategories] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [quantity, setQuantity] = useState("");
@@ -79,6 +66,7 @@ const Purchase = ({ editPurchase, type }) => {
   const [selectedParty, setSelectedParty] = useState(null);
   const [address, setAddress] = useState("");
   const [contactNo, setContactNo] = useState("");
+  const [newProduct, setNewProduct] = useState({ category: "", productId: "", code: "", size: "", quantity: "", filteredData: [] })
 
 
   useEffect(() => {
@@ -208,15 +196,14 @@ const Purchase = ({ editPurchase, type }) => {
     setPartyError(false);
     setDateError(false);
     setError(false);
-    setProducts([{ category: "", productId: "", code: "", size: "", quantity: "", filteredData: [] }])
+    setProducts([])
     setParty("");
     setInvoice("");
     setDate(moment().format("YYYY-MM-DD"))
 
   }
 
-  const handleSizeQuantity = (index, e, name) => {
-
+  const handleSizeQuantity = (e, name) => {
     let entity, value;
 
     if (name) {
@@ -227,52 +214,43 @@ const Purchase = ({ editPurchase, type }) => {
       value = e.target.value;
     }
 
-    let data = [...products];
-
+    let data = { ...newProduct };
 
     if (entity === 'productId') {
 
       let productCode = productMaster.filter(p => p._id === value);
-      let data = [...products];
-      if (productCode && productCode[0]?.code != data[index]['code']) {
-        data[index]['code'] = productCode[0]?.code;
-        setProducts(data);
+      if (productCode && productCode[0]?.code != data['code']) {
+        data['code'] = productCode[0]?.code;
       }
     } else if (e.target.name === 'category') {
-      let data = [...products];
-      data[index]['filteredData'] = productMaster.filter(p => p.categoryId._id === e.target.value);;
-      setProducts(data);
+      data['filteredData'] = productMaster.filter(p => p.categoryId._id === e.target.value);
     }
-    data[index][entity] = value;
-    setProducts(data);
+    data[entity] = value;
+    setNewProduct(data);
 
   }
 
   const addSizeQuantity = () => {
-    let newfield = { category: undefined, code: undefined, productId: undefined, quantity: undefined, filteredData: [] }
-    setProducts([...products, newfield])
+    let newfield = { category: "", productId: "", code: "", size: "", quantity: "", filteredData: [] }
+    setProducts([...products, newProduct])
+    setNewProduct(newfield);
   }
 
   const deleteSizeQuantity = (index) => {
-    // alert(index);
-
-    // return;
     let data = [...products];
     data.splice(index, 1)
     setProducts(data)
   }
 
-  const handleProductCode = (e, index) => {
-    let data = [...products];
-    data[index]['code'] = e.target.value;
-    setProducts(data);
+  const handleProductCode = (e) => {
+    let data = { ...newProduct };
+    data['code'] = e.target.value;
+    setNewProduct(data);
 
     const searchRegex = new RegExp(escapeRegExp(e.target.value), 'i')
 
     const filteredRows = productMaster.filter(row => {
       return Object.keys(row).some(field => {
-
-        // @ts-ignore
 
         return searchRegex.test(row['code'].toString())
       })
@@ -280,16 +258,19 @@ const Purchase = ({ editPurchase, type }) => {
     if (e.target.value.length) {
       if (filteredRows.length > 0) {
 
-        let data = [...products];
-        data[index]['productId'] = filteredRows[0]._id;
-        data[index]['filteredData'] = filteredRows;
-        setProducts(data);
+        let data = { ...newProduct };
+        data['productId'] = filteredRows[0]._id;
+        data['filteredData'] = filteredRows;
+        setNewProduct(data);
+        setProducts(newProduct);
       }
 
     } else {
-      let data = [...products];
-      data[index]['filteredData'] = [];
-      setProducts(data);
+      let data = { ...newProduct };
+      data['filteredData'] = [];
+      setNewProduct(data);
+      setProducts(newProduct);
+
     }
   }
 
@@ -326,6 +307,14 @@ const Purchase = ({ editPurchase, type }) => {
     setContactNo(party?.contactNo)
   }
 
+  const handleAddProductVisiblity = () => {
+    if (!newProduct.category.length || !newProduct.code.length || !newProduct.productId.length || !newProduct.quantity.length) {
+
+      // return false;
+    }
+
+    return false;
+  }
 
   return (
     <Grid container spacing={6}>
@@ -457,129 +446,179 @@ const Purchase = ({ editPurchase, type }) => {
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant='subtitle1' >Add products</Typography>
+                <Divider><Typography variant='subtitle1' >Add products</Typography></Divider>
               </Grid>
+              <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                <TableContainer sx={{ maxHeight: 440 }}>
+                  <Table stickyHeader aria-label='sticky table'>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="left" sx={{ minWidth: 80 }}>
+                          Category
+                        </TableCell>
+                        <TableCell align="left" sx={{ minWidth: 100 }}>
+                          Code
+                        </TableCell>
+                        <TableCell align="left" sx={{ minWidth: 100 }}>
+                          Name
+                        </TableCell>
+                        <TableCell align="left" sx={{ minWidth: 100 }}>
+                          Size
+                        </TableCell>
+                        <TableCell align="left" sx={{ width: 80 }}>
+                          Quantity
+                        </TableCell>
+                        <TableCell align="left" sx={{ width: 60 }}>
+                          Actions
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {(products.length === 0 ? (
+                        <div style={{ textAlign: 'center' }}>No products added</div>
+                      )
+                        : products.map(p => (
+                          <TableRow hover role='checkbox' tabIndex={-1} key={p._id}>
+                            <TableCell key={data._id} align="left">
+                              {p.category}
+                            </TableCell>
+                            <TableCell key={data.id} align="left">
+                              {p.code}
+                            </TableCell>
+                            <TableCell key={data.id} align="left">
+                              {p?.productId}
+                            </TableCell>
+                            <TableCell key={data.id} align="left">
+                              {p?.productId}
+                            </TableCell>
+                            <TableCell key={data.id} align="left">
+                              {p.quantity}
+                            </TableCell>
+                            <TableCell key={data.id} align="left">
+                              <MdModeEditOutline color="#9155FD" size="20px" style={{ cursor: "pointer" }} onClick={() => deleteSizeQuantity("index")} />
+                              <AiFillDelete color="red" size="20px" style={{ cursor: "pointer", marginLeft: 8 }} onClick={() => deleteSizeQuantity("index")} />
 
-              {products.map((q, index) => (<>
-                <Grid item xs={4}>
-                  <FormControl fullWidth>
-                    <InputLabel id='category'>Category</InputLabel>
-                    <Select
-                      label='Category'
-                      name="category"
-                      id='form-layouts-separator-select'
-                      labelId='form-layouts-separator-select-label'
-                      value={q.category}
-                      onChange={(e) => handleSizeQuantity(index, e)}
-                    >
-                      {categories.map(c => (
-                        <MenuItem key={c._id} value={c._id}>{c.name}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={2}>
-                  <TextField
-                    fullWidth
-                    required
-                    name='code'
-                    type='text'
-                    label='Code'
-                    placeholder='product code'
-                    value={q.code}
-                    onChange={(e) => handleProductCode(e, index)}
-                  />
-                </Grid>
-                <Grid item xs={4} >
-                  <Autocomplete
-                    options={q.category != '' ? q.filteredData : productMaster}
-                    getOptionLabel={option => option.name + " " + option.size}
-                    name="productId"
-                    onChange={(e, values) => handleSizeQuantity(index, values?._id, "productId")}
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        name="productId"
-                        variant="standard"
-                        label="Product Name"
-                        placeholder="Product Name"
-                        margin="normal"
-                        fullWidth
-                      />
-                    )}
-                  />
-                  {type && q.productId && (
-                    <a style={{ color: "#9155FD", float: "right", cursor: "pointer" }} onClick={() => markSegregated(index)}>Segregated</a>
+                            </TableCell>
+                          </TableRow>
+                        )))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+              <Grid item xs={4}>
+                <FormControl fullWidth>
+                  <InputLabel id='category'>Category</InputLabel>
+                  <Select
+                    label='Category'
+                    name="category"
+                    id='form-layouts-separator-select'
+                    labelId='form-layouts-separator-select-label'
+                    value={newProduct.category}
+                    onChange={(e) => handleSizeQuantity(e)}
+                  >
+                    {categories.map(c => (
+                      <MenuItem key={c._id} value={c._id}>{c.name}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={2}>
+                <TextField
+                  fullWidth
+                  required
+                  name='code'
+                  type='text'
+                  label='Code'
+                  placeholder='product code'
+                  value={newProduct.code}
+                  onChange={(e) => handleProductCode(e)}
+                />
+              </Grid>
+              <Grid item xs={4} >
+                <Autocomplete
+                  options={newProduct.category != '' ? newProduct.filteredData : productMaster}
+                  getOptionLabel={option => option.name + " " + option.size}
+                  name="productId"
+                  value={newProduct.productId ? productMaster.filter(p => p._id === newProduct.productId)[0] : null}
+                  onChange={(e, values) => handleSizeQuantity(values?._id, "productId")}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      name="productId"
+                      variant="standard"
+                      label="Product Name"
+                      placeholder="Product Name"
+                      margin="normal"
+                      fullWidth
+                    />
                   )}
-
-                </Grid>
-                {q?.isSegregated && (
-                  <>
-                    <Grid item xs={4}>
-                      <FormControl fullWidth>
-                        <InputLabel id='category'>From Product</InputLabel>
-                        <Select
-                          label='From Product'
-                          name="from"
-                          id='form-layouts-separator-select'
-                          labelId='form-layouts-separator-select-label'
-                          value={q.from}
-                          onChange={(e) => handleSizeQuantity(index, e)}
-                        >
-                          {productMaster.filter(p => p.code === q.code && p._id != q.productId).map(p => (
-                            <MenuItem key={p._id} value={p._id}>{p.name + "  " + p.size}</MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-
-                    <Grid item xs={4}>
-                      <FormControl fullWidth>
-                        <InputLabel id='category'>Left Over</InputLabel>
-                        <Select
-                          label='From Product'
-                          name="leftOver"
-                          id='form-layouts-separator-select'
-                          labelId='form-layouts-separator-select-label'
-                          value={q.leftOver}
-                          onChange={(e) => handleSizeQuantity(index, e)}
-                        >
-                          {productMaster.filter(p => p.code === q.code).map(p => (
-                            <MenuItem key={p._id} value={p._id}>{p.name + "  " + p.size}</MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-
-                  </>
+                />
+                {type && newProduct.productId && (
+                  <a style={{ color: "#9155FD", float: "right", cursor: "pointer" }} onClick={() => markSegregated(index)}>Segregated</a>
                 )}
-                <Grid item xs={2}>
-                  <TextField
-                    fullWidth
-                    required
-                    name='quantity'
-                    type='text'
-                    label='Quantity'
-                    placeholder='carterleonard@gmail.com'
-                    value={q.quantity}
-                    onChange={(e) => handleSizeQuantity(index, e)}
-                  />
-                </Grid>
-                {(index > 0) && (
-                  <Grid item xs={12}>
-                    <AiFillDelete color="red" size="20px" style={{ cursor: "pointer" }} onClick={() => deleteSizeQuantity(index)} />
+
+              </Grid>
+              {newProduct?.isSegregated && (
+                <>
+                  <Grid item xs={4}>
+                    <FormControl fullWidth>
+                      <InputLabel id='category'>From Product</InputLabel>
+                      <Select
+                        label='From Product'
+                        name="from"
+                        id='form-layouts-separator-select'
+                        labelId='form-layouts-separator-select-label'
+                        value={newProduct.from}
+                        onChange={(e) => handleSizeQuantity(e)}
+                      >
+                        {productMaster.filter(p => p.code === newProduct.code && p._id != newProduct.productId).map(p => (
+                          <MenuItem key={p._id} value={p._id}>{p.name + "  " + p.size}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Grid>
-                )}
-              </>
-              ))}
 
-              <Grid item xs={6}>
-                <BsFillPlusCircleFill color="#9155FD" size="20px" style={{ cursor: "pointer" }} onClick={addSizeQuantity} />
+                  <Grid item xs={4}>
+                    <FormControl fullWidth>
+                      <InputLabel id='category'>Left Over</InputLabel>
+                      <Select
+                        label='From Product'
+                        name="leftOver"
+                        id='form-layouts-separator-select'
+                        labelId='form-layouts-separator-select-label'
+                        value={newProduct.leftOver}
+                        onChange={(e) => handleSizeQuantity(e)}
+                      >
+                        {productMaster.filter(p => p.code === newProduct.code).map(p => (
+                          <MenuItem key={p._id} value={p._id}>{p.name + "  " + p.size}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
+                </>
+              )}
+              <Grid item xs={2}>
+                <TextField
+                  fullWidth
+                  required
+                  name='quantity'
+                  type='text'
+                  label='Quantity'
+                  placeholder='carterleonard@gmail.com'
+                  value={newProduct.quantity}
+                  onChange={(e) => handleSizeQuantity(e)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button style={{ float: 'right' }} disabled={!newProduct.category || !newProduct.code || !newProduct.productId || !newProduct.quantity} onClick={addSizeQuantity} >
+                  <BsFillPlusCircleFill color="#9155FD" size="20px" />
+                </Button>
               </Grid>
 
             </Grid>
             <Button variant="outlined" sx={{ float: 'right', margin: '10px 0 20px 0' }} onClick={handleSubmit}>
-              Submit
+              Save
             </Button>
 
           </form>
@@ -587,7 +626,7 @@ const Purchase = ({ editPurchase, type }) => {
         </Card>
       </Grid>
 
-    </Grid>
+    </Grid >
   )
 }
 
