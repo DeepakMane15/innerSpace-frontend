@@ -64,7 +64,7 @@ const Sale = ({ editPurchase, type }) => {
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [products, setProducts] = useState([]);
-
+console.log(products)
   const [productMaster, setProductMaster] = useState([]);
 
   // const categories = ['instant', 'odd']
@@ -213,7 +213,7 @@ const Sale = ({ editPurchase, type }) => {
     setPartyError(false);
     setDateError(false);
     setError(false);
-    setProducts([{ category: "", productId: "", code: "", size: "", quantity: "", filteredData: [] }])
+    setProducts([])
     setParty("");
     setInvoice("");
     setDate(moment().format("YYYY-MM-DD"))
@@ -255,6 +255,9 @@ const Sale = ({ editPurchase, type }) => {
   }
 
   const deleteSizeQuantity = (index) => {
+    console.log(products);
+
+    return;
     let data = [...products];
     data.splice(index, 1)
     setProducts(data)
