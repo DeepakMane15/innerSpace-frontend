@@ -207,7 +207,7 @@ export default async function handler(req, res) {
               Challan No
             </div>
             <div>
-              : 0572
+              : ${challan[0].invoiceNo}
             </div>
           </div>
           <div style="display: flex; ">
