@@ -60,7 +60,6 @@ const Purchase = ({ editPurchase, type }) => {
   const [contactNoError, setContactNoError] = useState(false);
   const [error, setError] = useState(false);
   const [dateError, setDateError] = useState(false);
-  const [filteredData, setFilteredData] = useState([])
   const [parties, setParties] = useState([]);
   const [date, setDate] = useState(moment().format("YYYY-MM-DD"));
   const [selectedParty, setSelectedParty] = useState(null);
@@ -223,6 +222,7 @@ const Purchase = ({ editPurchase, type }) => {
         data['code'] = productCode[0]?.code;
       }
     } else if (e.target.name === 'category') {
+      data['category'] = e.target.value;
       data['filteredData'] = productMaster.filter(p => p.categoryId._id === e.target.value);
     }
     data[entity] = value;
@@ -245,43 +245,57 @@ const Purchase = ({ editPurchase, type }) => {
   const handleProductCode = (e) => {
     let data = { ...newProduct };
     data['code'] = e.target.value;
+
     setNewProduct(data);
 
     const searchRegex = new RegExp(escapeRegExp(e.target.value), 'i')
+    let filteredRows = [];
+    if (newProduct.category.length) {
+      filteredRows = newProduct.filteredData.filter(row => {
+        return Object.keys(row).some(field => {
 
-    const filteredRows = productMaster.filter(row => {
-      return Object.keys(row).some(field => {
-
-        return searchRegex.test(row['code'].toString())
+          return searchRegex.test(row['code'].toString())
+        })
       })
-    })
-    if (e.target.value.length) {
-      if (filteredRows.length > 0) {
 
-        let data = { ...newProduct };
-        data['productId'] = filteredRows[0]._id;
-        data['filteredData'] = filteredRows;
+      if (e.target.value.length) {
+        if (filteredRows.length > 0) {
+          data['productId'] = filteredRows[0]._id;
+          data['category'] = filteredRows[0].categoryId._id;
+          data['filteredData'] = filteredRows;
+          setNewProduct(data);
+        }
+
+      } else {
+        data['filteredData'] = [];
         setNewProduct(data);
-        setProducts(newProduct);
       }
 
-    } else {
-      let data = { ...newProduct };
-      data['filteredData'] = [];
-      setNewProduct(data);
-      setProducts(newProduct);
+    }
+    else {
+      let categoryId = productMaster.filter(p => p.code === e.target.value);
+      if (categoryId.length) {
+        newProduct['category'] = categoryId[0].categoryId._id;
+        newProduct['filteredData'] = categoryId;
+        handleProductCode(e);
+      }
 
+      // filteredRows = productMaster.filter(row => {
+      //   return Object.keys(row).some(field => {
+
+      //     return searchRegex.test(row['code'].toString())
+      //   })
+      // })
     }
   }
 
-  const markSegregated = (index) => {
-    let data = [...products];
-    data[index]['isSegregated'] = true;
-    data[index]['from'] = '';
-    data[index]['leftOver'] = '';
-    setProducts(data);
+  const markSegregated = () => {
+    let data = { ...newProduct };
+    data['isSegregated'] = true;
+    data['from'] = '';
+    data['leftOver'] = '';
+    setNewProduct(data);
   }
-
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -305,15 +319,6 @@ const Purchase = ({ editPurchase, type }) => {
     setSelectedParty(party);
     setAddress(party?.address);
     setContactNo(party?.contactNo)
-  }
-
-  const handleAddProductVisiblity = () => {
-    if (!newProduct.category.length || !newProduct.code.length || !newProduct.productId.length || !newProduct.quantity.length) {
-
-      // return false;
-    }
-
-    return false;
   }
 
   return (
@@ -480,16 +485,16 @@ const Purchase = ({ editPurchase, type }) => {
                         : products.map(p => (
                           <TableRow hover role='checkbox' tabIndex={-1} key={p._id}>
                             <TableCell key={data._id} align="left">
-                              {p.category}
+                              {categories.filter(c => c._id === p.category)[0]?.name}
                             </TableCell>
                             <TableCell key={data.id} align="left">
                               {p.code}
                             </TableCell>
                             <TableCell key={data.id} align="left">
-                              {p?.productId}
+                            {productMaster.filter(c => c._id === p.productId)[0]?.name}
                             </TableCell>
                             <TableCell key={data.id} align="left">
-                              {p?.productId}
+                            {productMaster.filter(c => c._id === p.productId)[0]?.size}
                             </TableCell>
                             <TableCell key={data.id} align="left">
                               {p.quantity}
@@ -554,7 +559,7 @@ const Purchase = ({ editPurchase, type }) => {
                   )}
                 />
                 {type && newProduct.productId && (
-                  <a style={{ color: "#9155FD", float: "right", cursor: "pointer" }} onClick={() => markSegregated(index)}>Segregated</a>
+                  <a style={{ color: "#9155FD", float: "right", cursor: "pointer" }} onClick={markSegregated}>Segregated</a>
                 )}
 
               </Grid>
