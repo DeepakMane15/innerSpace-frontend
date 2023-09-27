@@ -651,7 +651,7 @@ const Sale = ({ editPurchase, type }) => {
               </Grid>
 
             </Grid>
-            <Button variant="outlined" sx={{ float: 'right', margin: '10px 0 20px 0' }} onClick={reset}>
+            <Button variant="outlined" sx={{ float: 'right', margin: '10px 0 20px 0' }} onClick={handleSubmit}>
               Submit
             </Button>
 
