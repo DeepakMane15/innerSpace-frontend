@@ -54,6 +54,7 @@ const Sale = ({ editPurchase, type }) => {
   const [columns, setColumns] = useState([]);
 
   const [toaster, setToaster] = useState(false);
+  const [errorToaster, setErrorToaster] = useState(false);
   const [editStock, setEditStock] = useState(null);
 
 
@@ -64,7 +65,7 @@ const Sale = ({ editPurchase, type }) => {
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [products, setProducts] = useState([]);
-console.log(products)
+  console.log(products)
   const [productMaster, setProductMaster] = useState([]);
 
   // const categories = ['instant', 'odd']
@@ -183,7 +184,9 @@ console.log(products)
           clientName: party,
           id: invoice,
           type: type ? "purchase" : "sell",
-          invoiceDate: date
+          invoiceDate: date,
+          address: address,
+          contactNo: contactNo
         }
 
         console.log(data)
@@ -215,6 +218,8 @@ console.log(products)
     setError(false);
     setProducts([])
     setParty("");
+    setAddress("");
+    setContactNo("");
     setInvoice("");
     setDate(moment().format("YYYY-MM-DD"))
 
@@ -507,27 +512,27 @@ console.log(products)
                       )
                         : products.map(p => (
                           <TableRow hover role='checkbox' tabIndex={-1} key={p._id}>
-                          <TableCell key={data._id} align="left">
-                            {categories.filter(c => c._id === p.category)[0]?.name}
-                          </TableCell>
-                          <TableCell key={data.id} align="left">
-                            {p.code}
-                          </TableCell>
-                          <TableCell key={data.id} align="left">
-                          {productMaster.filter(c => c._id === p.productId)[0]?.name}
-                          </TableCell>
-                          <TableCell key={data.id} align="left">
-                          {productMaster.filter(c => c._id === p.productId)[0]?.size}
-                          </TableCell>
-                          <TableCell key={data.id} align="left">
-                            {p.quantity}
-                          </TableCell>
-                          <TableCell key={data.id} align="left">
-                            <MdModeEditOutline color="#9155FD" size="20px" style={{ cursor: "pointer" }} onClick={() => deleteSizeQuantity("index")} />
-                            <AiFillDelete color="red" size="20px" style={{ cursor: "pointer", marginLeft: 8 }} onClick={() => deleteSizeQuantity("index")} />
+                            <TableCell key={data._id} align="left">
+                              {categories.filter(c => c._id === p.category)[0]?.name}
+                            </TableCell>
+                            <TableCell key={data.id} align="left">
+                              {p.code}
+                            </TableCell>
+                            <TableCell key={data.id} align="left">
+                              {productMaster.filter(c => c._id === p.productId)[0]?.name}
+                            </TableCell>
+                            <TableCell key={data.id} align="left">
+                              {productMaster.filter(c => c._id === p.productId)[0]?.size}
+                            </TableCell>
+                            <TableCell key={data.id} align="left">
+                              {p.quantity}
+                            </TableCell>
+                            <TableCell key={data.id} align="left">
+                              <MdModeEditOutline color="#9155FD" size="20px" style={{ cursor: "pointer" }} onClick={() => deleteSizeQuantity("index")} />
+                              <AiFillDelete color="red" size="20px" style={{ cursor: "pointer", marginLeft: 8 }} onClick={() => deleteSizeQuantity("index")} />
 
-                          </TableCell>
-                        </TableRow>
+                            </TableCell>
+                          </TableRow>
                         )))}
                     </TableBody>
                   </Table>
@@ -646,7 +651,7 @@ console.log(products)
               </Grid>
 
             </Grid>
-            <Button variant="outlined" sx={{ float: 'right', margin: '10px 0 20px 0' }} onClick={handleSubmit}>
+            <Button variant="outlined" sx={{ float: 'right', margin: '10px 0 20px 0' }} onClick={reset}>
               Submit
             </Button>
 

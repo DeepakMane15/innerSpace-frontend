@@ -197,6 +197,8 @@ const Purchase = ({ editPurchase, type }) => {
     setError(false);
     setProducts([])
     setParty("");
+    setAddress("");
+    setContactNo("");
     setInvoice("");
     setDate(moment().format("YYYY-MM-DD"))
 
@@ -491,10 +493,10 @@ const Purchase = ({ editPurchase, type }) => {
                               {p.code}
                             </TableCell>
                             <TableCell key={data.id} align="left">
-                            {productMaster.filter(c => c._id === p.productId)[0]?.name}
+                              {productMaster.filter(c => c._id === p.productId)[0]?.name}
                             </TableCell>
                             <TableCell key={data.id} align="left">
-                            {productMaster.filter(c => c._id === p.productId)[0]?.size}
+                              {productMaster.filter(c => c._id === p.productId)[0]?.size}
                             </TableCell>
                             <TableCell key={data.id} align="left">
                               {p.quantity}
