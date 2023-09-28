@@ -14,12 +14,6 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 
 // ** Demo Components Imports
-import TableBasic from 'src/views/tables/TableBasic'
-import TableDense from 'src/views/tables/TableDense'
-import TableSpanning from 'src/views/tables/TableSpanning'
-import TableCustomized from 'src/views/tables/TableCustomized'
-import TableCollapsible from 'src/views/tables/TableCollapsible'
-import TableStickyHeader from 'src/views/tables/TableStickyHeader'
 import { useEffect } from 'react'
 import axios from 'axios'
 import { useState } from 'react'
@@ -28,15 +22,9 @@ import AddOrEditPurchase from 'src/views/AddorEditPurchase'
 import withAuth from 'src/hoc/withAuth'
 import axiosInstance from 'src/hoc/axios'
 
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import { MdModeEditOutline } from 'react-icons/md'
-import { BsFillPlusCircleFill } from 'react-icons/bs';
+import { BsExclamationSquareFill, BsFillPlusCircleFill } from 'react-icons/bs';
 import { AiFillDelete } from 'react-icons/ai'
-import { Box, FormHelperText } from '@mui/material';
 import FormControl from '@mui/material/FormControl'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
@@ -81,13 +69,17 @@ const Sale = ({ editPurchase, type }) => {
   const [contactNoError, setContactNoError] = useState(false);
   const [error, setError] = useState(false);
   const [dateError, setDateError] = useState(false);
+  const [refDateError, setRefDateError] = useState(false);
+  const [refError, setRefError] = useState(false);
   const [filteredData, setFilteredData] = useState([])
   const [parties, setParties] = useState([]);
   const [date, setDate] = useState(moment().format("YYYY-MM-DD"));
   const [selectedParty, setSelectedParty] = useState(null);
   const [address, setAddress] = useState("");
   const [contactNo, setContactNo] = useState("");
-  const [newProduct, setNewProduct] = useState({ category: "", productId: "", code: "", size: "", quantity: "", filteredData: [] })
+  const [refNo, setRefNo] = useState("");
+  const [refDate, setRefDate] = useState(moment().format("YYYY-MM-DD"));
+  const [newProduct, setNewProduct] = useState({ category: "", productId: "", code: "", size: "", quantity: "", printableDesc: "", printableQty: "", customiseDesc: false, filteredData: [] })
 
   useEffect(() => {
     if (editPurchase) {
@@ -142,7 +134,7 @@ const Sale = ({ editPurchase, type }) => {
 
   const handleSubmit = () => {
 
-    if (!invoice || !party || !date || !address || !contactNo) {
+    if (!invoice || !party || !date || !address || !contactNo || !refNo || !refDate || !products.length) {
       if (!invoice) {
         setInvoiceError(true);
       }
@@ -158,6 +150,15 @@ const Sale = ({ editPurchase, type }) => {
       if (!contactNo) {
         setContactNoError(true);
       }
+      if (!refNo) {
+        setRefError(true);
+      }
+      if (!refDate) {
+        setRefDateError(true);
+      }
+      if (!products.length) {
+        alert("Please enter atleast one product!")
+      }
 
       return;
     }
@@ -166,6 +167,8 @@ const Sale = ({ editPurchase, type }) => {
     setDateError(false);
     setAddressError(false);
     setContactNoError(false);
+    setRefError(false);
+    setRefDateError(false);
     setError(false);
 
     products.forEach(p => {
@@ -186,7 +189,9 @@ const Sale = ({ editPurchase, type }) => {
           type: type ? "purchase" : "sell",
           invoiceDate: date,
           address: address,
-          contactNo: contactNo
+          contactNo: contactNo,
+          refNo: refNo,
+          refDate: refDate
         }
 
         console.log(data)
@@ -247,6 +252,8 @@ const Sale = ({ editPurchase, type }) => {
     } else if (e.target.name === 'category') {
       data['category'] = e.target.value;
       data['filteredData'] = productMaster.filter(p => p.categoryId._id === e.target.value);
+      data['productId'] = "";
+      data['code'] = "";
     }
     data[entity] = value;
     setNewProduct(data);
@@ -254,15 +261,23 @@ const Sale = ({ editPurchase, type }) => {
   }
 
   const addSizeQuantity = () => {
-    let newfield = { category: "", productId: "", code: "", size: "", quantity: "", filteredData: [] }
+    if (newProduct.customiseDesc) {
+      if (!newProduct.printableDesc && !newProduct.printableQty) {
+        alert(`Please enter Printable Description and Quantity}`);
+
+        return;
+      } else if (!newProduct.printableDesc || !newProduct.printableQty) {
+        alert(`Please enter Printable ${!newProduct.printableDesc ? 'Description' : 'Quantity'}`);
+
+        return;
+      }
+    }
+    let newfield = { category: "", productId: "", code: "", size: "", quantity: "", printableDesc: "", printableQty: "", customiseDesc: false, filteredData: [] }
     setProducts([...products, newProduct])
     setNewProduct(newfield);
   }
 
   const deleteSizeQuantity = (index) => {
-    console.log(products);
-
-    return;
     let data = [...products];
     data.splice(index, 1)
     setProducts(data)
@@ -276,42 +291,24 @@ const Sale = ({ editPurchase, type }) => {
 
     const searchRegex = new RegExp(escapeRegExp(e.target.value), 'i')
     let filteredRows = [];
-    if (newProduct.category.length) {
-      filteredRows = newProduct.filteredData.filter(row => {
-        return Object.keys(row).some(field => {
+    filteredRows = productMaster.filter(row => {
+      return Object.keys(row).some(field => {
 
-          return searchRegex.test(row['code'].toString())
-        })
+        return searchRegex.test(row['code'].toString())
       })
+    })
 
-      if (e.target.value.length) {
-        if (filteredRows.length > 0) {
-          data['productId'] = filteredRows[0]._id;
-          data['category'] = filteredRows[0].categoryId._id;
-          data['filteredData'] = filteredRows;
-          setNewProduct(data);
-        }
-
-      } else {
-        data['filteredData'] = [];
+    if (e.target.value.length) {
+      if (filteredRows.length > 0) {
+        data['productId'] = filteredRows[0]._id;
+        data['category'] = filteredRows[0].categoryId._id;
+        data['filteredData'] = filteredRows;
         setNewProduct(data);
       }
 
-    }
-    else {
-      let categoryId = productMaster.filter(p => p.code === e.target.value);
-      if (categoryId.length) {
-        newProduct['category'] = categoryId[0].categoryId._id;
-        newProduct['filteredData'] = categoryId;
-        handleProductCode(e);
-      }
-
-      // filteredRows = productMaster.filter(row => {
-      //   return Object.keys(row).some(field => {
-
-      //     return searchRegex.test(row['code'].toString())
-      //   })
-      // })
+    } else {
+      data['filteredData'] = [];
+      setNewProduct(data);
     }
   }
 
@@ -349,6 +346,19 @@ const Sale = ({ editPurchase, type }) => {
     setContactNo(party?.contactNo)
   }
 
+  const handleCustomiseDescription = () => {
+    let data = { ...newProduct }
+    if (data['customiseDesc']) {
+      data['customiseDesc'] = false;
+      data['printableDesc'] = "";
+      data['printableQty'] = "";
+    } else {
+      data['customiseDesc'] = true;
+      data['printableDesc'] = productMaster.filter(p => p._id === data['productId'])[0]?.name;
+      data['printableQty'] = data['quantity'];
+    }
+    setNewProduct(data);
+  }
 
   return (
     <Grid container spacing={6}>
@@ -478,6 +488,39 @@ const Sale = ({ editPurchase, type }) => {
                   onChange={(e) => setContactNo(e.target.value)}
                 />
               </Grid>
+              <Grid item xs={3} sx={{ textAlign: 'center' }}>
+                <label>Ref No : </label>
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  variant="standard"
+                  fullWidth
+                  required
+                  name='refNo'
+                  error={refError}
+                  type='text'
+                  placeholder="Enter Ref No"
+                  value={refNo}
+                  onChange={(e) => setRefNo(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={2} >
+                <label>Ref Date : </label>
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  fullWidth
+                  variant="standard"
+                  required
+                  name='date'
+                  error={refDateError}
+                  type='date'
+                  label='Ref Date'
+                  placeholder='Ref Date'
+                  value={refDate}
+                  onChange={(e) => setRefDate(e.target.value)}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <Divider><Typography variant='subtitle1' >Add products</Typography></Divider>
               </Grid>
@@ -493,13 +536,15 @@ const Sale = ({ editPurchase, type }) => {
                           Code
                         </TableCell>
                         <TableCell align="left" sx={{ minWidth: 100 }}>
-                          Name
+                          Name <br />
+                          Printable Name
                         </TableCell>
-                        <TableCell align="left" sx={{ minWidth: 100 }}>
+                        <TableCell align="left" sx={{ minWidth: 80 }}>
                           Size
                         </TableCell>
-                        <TableCell align="left" sx={{ width: 80 }}>
-                          Quantity
+                        <TableCell align="left" sx={{ width: 130 }}>
+                          Quantity <br />
+                          Printable Qty
                         </TableCell>
                         <TableCell align="left" sx={{ width: 60 }}>
                           Actions
@@ -519,13 +564,15 @@ const Sale = ({ editPurchase, type }) => {
                               {p.code}
                             </TableCell>
                             <TableCell key={data.id} align="left">
-                              {productMaster.filter(c => c._id === p.productId)[0]?.name}
+                              {productMaster.filter(c => c._id === p.productId)[0]?.name} <br />
+                              {p.printableDesc}
                             </TableCell>
                             <TableCell key={data.id} align="left">
                               {productMaster.filter(c => c._id === p.productId)[0]?.size}
                             </TableCell>
                             <TableCell key={data.id} align="left">
-                              {p.quantity}
+                              {p.quantity} <br />
+                              {p.printableQty}
                             </TableCell>
                             <TableCell key={data.id} align="left">
                               <MdModeEditOutline color="#9155FD" size="20px" style={{ cursor: "pointer" }} onClick={() => deleteSizeQuantity("index")} />
@@ -538,7 +585,18 @@ const Sale = ({ editPurchase, type }) => {
                   </Table>
                 </TableContainer>
               </Paper>
-
+              <Grid item xs={2}>
+                <TextField
+                  fullWidth
+                  required
+                  name='code'
+                  type='text'
+                  label='Code'
+                  placeholder='product code'
+                  value={newProduct.code}
+                  onChange={(e) => handleProductCode(e)}
+                />
+              </Grid>
               <Grid item xs={4}>
                 <FormControl fullWidth>
                   <InputLabel id='category'>Category</InputLabel>
@@ -555,18 +613,6 @@ const Sale = ({ editPurchase, type }) => {
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={2}>
-                <TextField
-                  fullWidth
-                  required
-                  name='code'
-                  type='text'
-                  label='Code'
-                  placeholder='product code'
-                  value={newProduct.code}
-                  onChange={(e) => handleProductCode(e)}
-                />
               </Grid>
               <Grid item xs={4} >
                 <Autocomplete
@@ -644,15 +690,48 @@ const Sale = ({ editPurchase, type }) => {
                   onChange={(e) => handleSizeQuantity(e)}
                 />
               </Grid>
+              {(newProduct.customiseDesc && (
+                <>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      required
+                      name='printableDesc'
+                      type='text'
+                      label='Printable Description'
+                      placeholder='Printable Description'
+                      value={newProduct.printableDesc}
+                      onChange={(e) => handleSizeQuantity(e)}
+                    />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <TextField
+                      fullWidth
+                      required
+                      name='printableQty'
+                      type='text'
+                      label='Printable Quantity'
+                      placeholder='Printable Quantity'
+                      value={newProduct.printableQty}
+                      onChange={(e) => handleSizeQuantity(e)}
+                    />
+                  </Grid>
+                </>
+              ))}
               <Grid item xs={12}>
                 <Button style={{ float: 'right' }} disabled={!newProduct.category || !newProduct.code || !newProduct.productId || !newProduct.quantity} onClick={addSizeQuantity} >
                   <BsFillPlusCircleFill color="#9155FD" size="20px" />
                 </Button>
               </Grid>
+              <Grid item xs={12}>
+                <Button variant='outlined' style={{ float: 'right' }} onClick={handleCustomiseDescription} >
+                  {!newProduct.customiseDesc ? 'Add Printable' : 'Cancel Printable'}
+                </Button>
+              </Grid>
 
             </Grid>
             <Button variant="outlined" sx={{ float: 'right', margin: '10px 0 20px 0' }} onClick={handleSubmit}>
-              Submit
+              Save
             </Button>
 
           </form>

@@ -121,7 +121,7 @@ const Purchase = ({ editPurchase, type }) => {
 
   const handleSubmit = () => {
 
-    if (!invoice || !party || !date || !address || !contactNo) {
+    if (!invoice || !party || !date || !address || !contactNo || !products.length) {
       if (!invoice) {
         setInvoiceError(true);
       }
@@ -136,6 +136,9 @@ const Purchase = ({ editPurchase, type }) => {
       }
       if (!contactNo) {
         setContactNoError(true);
+      }
+      if(!products.length){
+        alert("Please enter atleast one product!")
       }
 
       return;
@@ -226,6 +229,8 @@ const Purchase = ({ editPurchase, type }) => {
     } else if (e.target.name === 'category') {
       data['category'] = e.target.value;
       data['filteredData'] = productMaster.filter(p => p.categoryId._id === e.target.value);
+      data['productId'] = "";
+      data['code'] = "";
     }
     data[entity] = value;
     setNewProduct(data);
@@ -252,42 +257,24 @@ const Purchase = ({ editPurchase, type }) => {
 
     const searchRegex = new RegExp(escapeRegExp(e.target.value), 'i')
     let filteredRows = [];
-    if (newProduct.category.length) {
-      filteredRows = newProduct.filteredData.filter(row => {
-        return Object.keys(row).some(field => {
+    filteredRows = productMaster.filter(row => {
+      return Object.keys(row).some(field => {
 
-          return searchRegex.test(row['code'].toString())
-        })
+        return searchRegex.test(row['code'].toString())
       })
+    })
 
-      if (e.target.value.length) {
-        if (filteredRows.length > 0) {
-          data['productId'] = filteredRows[0]._id;
-          data['category'] = filteredRows[0].categoryId._id;
-          data['filteredData'] = filteredRows;
-          setNewProduct(data);
-        }
-
-      } else {
-        data['filteredData'] = [];
+    if (e.target.value.length) {
+      if (filteredRows.length > 0) {
+        data['productId'] = filteredRows[0]._id;
+        data['category'] = filteredRows[0].categoryId._id;
+        data['filteredData'] = filteredRows;
         setNewProduct(data);
       }
 
-    }
-    else {
-      let categoryId = productMaster.filter(p => p.code === e.target.value);
-      if (categoryId.length) {
-        newProduct['category'] = categoryId[0].categoryId._id;
-        newProduct['filteredData'] = categoryId;
-        handleProductCode(e);
-      }
-
-      // filteredRows = productMaster.filter(row => {
-      //   return Object.keys(row).some(field => {
-
-      //     return searchRegex.test(row['code'].toString())
-      //   })
-      // })
+    } else {
+      data['filteredData'] = [];
+      setNewProduct(data);
     }
   }
 
@@ -512,6 +499,18 @@ const Purchase = ({ editPurchase, type }) => {
                   </Table>
                 </TableContainer>
               </Paper>
+              <Grid item xs={2}>
+                <TextField
+                  fullWidth
+                  required
+                  name='code'
+                  type='text'
+                  label='Code'
+                  placeholder='product code'
+                  value={newProduct.code}
+                  onChange={(e) => handleProductCode(e)}
+                />
+              </Grid>
               <Grid item xs={4}>
                 <FormControl fullWidth>
                   <InputLabel id='category'>Category</InputLabel>
@@ -528,18 +527,6 @@ const Purchase = ({ editPurchase, type }) => {
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={2}>
-                <TextField
-                  fullWidth
-                  required
-                  name='code'
-                  type='text'
-                  label='Code'
-                  placeholder='product code'
-                  value={newProduct.code}
-                  onChange={(e) => handleProductCode(e)}
-                />
               </Grid>
               <Grid item xs={4} >
                 <Autocomplete

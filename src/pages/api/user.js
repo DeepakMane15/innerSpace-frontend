@@ -88,6 +88,7 @@ export default async function handler(req, res) {
 
     .subtext {
       font-size: 9px;
+      color: black;
       font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
     }
 
