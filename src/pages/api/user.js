@@ -236,8 +236,10 @@ export default async function handler(req, res) {
               : ${moment(challan[0].invoiceDate).format("DD/MM/YYYY")}
             </div>
           </div>
+          ${challan[0].type === 'sell' && (
+        <>
           <div style="display: flex; ">
-            <div class="bold" style="width: 100px;">
+            <div className="bold" style="width: 100px;">
               Ref No.
             </div>
             <div>
@@ -246,14 +248,15 @@ export default async function handler(req, res) {
           </div>
 
           <div style="display: flex; ">
-            <div class="bold" style="width: 100px;">
+            <div className="bold" style="width: 100px;">
               Date
             </div>
             <div>
               : ${moment(challan[0].refDate).format("DD/MM/YYYY")}
             </div>
           </div>
-
+        </>
+      )}
         </div>
       </div>
       <!-- sr table columns -->
