@@ -2,6 +2,7 @@ import fs from 'fs';
 
 import puppeteer from 'puppeteer';
 import handlers from 'handlebars';
+import moment from 'moment';
 
 // import puppeteer from 'puppeteer-core';
 // import chromium from '@sparticuz/chromium';
@@ -203,7 +204,7 @@ export default async function handler(req, res) {
           <br>
           ${clientAddress}
           <br>
-          <span class="bold">Contact Person : Mr Akhilesh Sharma- ${challan[0].contactNo}</span>
+          <span class="bold">Contact Person : ${challan[0].contactNo}</span>
           <br>
           <span class="bold"> GSTIN.:${challan[0].gstNo}</span>
           <br>
