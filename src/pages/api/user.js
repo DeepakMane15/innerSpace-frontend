@@ -2,6 +2,7 @@ import fs from 'fs';
 
 // import puppeteer from 'puppeteer';
 import handlers from 'handlebars';
+import moment from "moment";
 
 // import puppeteer from 'puppeteer-core';
 // import chromium from '@sparticuz/chromium';
@@ -28,13 +29,13 @@ export default async function handler(req, res) {
             ${index + 1}
           </td>
           <td style="width: 380px; padding-left:10px; ${index === challan.length - 1 ? null : 'height:10px'} ">
-          ${product.name}
+          ${product.customiseDesc ? product.printableDesc : product.name}
           </td>
           <td style="width: 60px; text-align: center;">
             ${product.packingType}
           </td>
           <td style="width: 60px; text-align: center;">
-            ${product.quantity}
+            ${product.customiseDesc ? product.printableQty : product.quantity}
           </td>
           <td style="width: 60px; text-align: center;">
           </td>
