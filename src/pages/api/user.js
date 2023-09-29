@@ -29,7 +29,7 @@ export default async function handler(req, res) {
             ${index + 1}
           </td>
           <td style="width: 380px; padding-left:10px; ${index === challan.length - 1 ? null : 'height:10px'} ">
-          ${product.customiseDesc ? product.printableDesc : product.name}
+          ${product.customiseDesc ? product.printableDesc : product.name + ' ' + product.size}
           </td>
           <td style="width: 60px; text-align: center;">
             ${product.packingType}
