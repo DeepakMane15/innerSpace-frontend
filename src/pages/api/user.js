@@ -11,7 +11,7 @@ const chromium = require("@sparticuz/chromium");
 
 export default async function handler(req, res) {
   const { challan } = req.body;
-
+  console.log(challan[0]);
   try {
 
     const products = challan.map((product, index) => (
@@ -33,6 +33,25 @@ export default async function handler(req, res) {
         </tr>
         `
     ))
+
+    function formatAddress(address) {
+      let lines = address.split(', ');
+      let formattedLines = [];
+
+      for (let i = 0; i < 3; i++) {
+        if (i < 2) {
+          formattedLines.push(lines[i] + ',');
+        } else {
+          formattedLines.push(lines[i]);
+        }
+      }
+
+      return formattedLines.join('<br>');
+    }
+
+
+    const clientAddress = formatAddress(challan[0]?.address);
+    console.log(clientAddress);
 
     const file = `
     <!DOCTYPE html>
@@ -80,6 +99,7 @@ export default async function handler(req, res) {
 
     .subtext {
       font-size: 9px;
+      color:black;
       font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
     }
 
@@ -106,7 +126,7 @@ export default async function handler(req, res) {
 
     table {
       border-collapse: collapse;
-      height: 400px;
+      height: 460px;
       border-bottom: 1px solid black;
     }
 
@@ -179,19 +199,15 @@ export default async function handler(req, res) {
     <div class="content">
       <div class="content-header">
         <div style="line-height: 18px; font-size: 14px; width:320px">
-          <span class="bold">M/s. Bolton Industries</span>
+          <span class="bold">${challan[0].clientName}</span>
           <br>
-          Ganesh Nagar, Agra Road,
+          ${clientAddress}
           <br>
-          Near Telephone Office, Aligarh
+          <span class="bold">Contact Person : Mr Akhilesh Sharma- ${challan[0].contactNo}</span>
           <br>
-          Uttar Pradesh -202001
+          <span class="bold"> GSTIN.:${challan[0].gstNo}</span>
           <br>
-          <span class="bold">Contact Person : Mr Akhilesh Sharma- 9412757420</span>
-          <br>
-          <span class="bold"> GSTIN.:09AJLPK1748D1Z6</span>
-          <br>
-          <span class="bold">STATE :Maharashtra</span>
+          <span class="bold">STATE :${challan[0].state}</span>
         </div>
         <div style=" border-left: 1px solid black; padding-left: 10px;">
           <div style="display: flex; ">
@@ -199,7 +215,7 @@ export default async function handler(req, res) {
               Challan No
             </div>
             <div>
-              : 0572
+              : ${challan[0].invoiceNo}
             </div>
           </div>
           <div style="display: flex; ">
@@ -207,7 +223,7 @@ export default async function handler(req, res) {
               Date
             </div>
             <div>
-              : 10/08/2023
+              : ${moment(challan[0].invoiceDate).format("DD/MM/YYYY")}
             </div>
           </div>
           <div style="display: flex; ">
@@ -215,7 +231,7 @@ export default async function handler(req, res) {
               Ref No.
             </div>
             <div>
-              : Ref- Inv No 151/Defective Look
+              : ${challan[0].refNo}
             </div>
           </div>
 
@@ -224,7 +240,7 @@ export default async function handler(req, res) {
               Date
             </div>
             <div>
-              : 08/07/2022
+              : ${moment(challan[0].refDate).format("DD/MM/YYYY")}
             </div>
           </div>
 
@@ -265,7 +281,7 @@ export default async function handler(req, res) {
           <div style=" border-bottom: 1px solid black;">
             GSTIN : 2423423423234
           </div>
-          <div style="font-size: 10px; line-height: 16px;">
+          <div style="font-size: 10px; line-height: 16px;color:black;">
             Terms & Conditions:
             <br>
             1.Goods received in good condition as per order<br>
