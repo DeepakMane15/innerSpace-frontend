@@ -213,11 +213,11 @@ export default async function handler(req, res) {
           <br>
           ${clientAddress}
           <br>
-          <span class="bold">Contact Person : Mr Akhilesh Sharma- ${challan[0].contactNo}</span>
+          <span class="bold">STATE :${challan[0].state}</span>
           <br>
           <span class="bold"> GSTIN.:${challan[0].gstNo}</span>
           <br>
-          <span class="bold">STATE :${challan[0].state}</span>
+          <span class="bold">Contact Person : Mr Akhilesh Sharma- ${challan[0].contactNo}</span>
         </div>
         <div style=" border-left: 1px solid black; padding-left: 10px;">
           <div style="display: flex; ">

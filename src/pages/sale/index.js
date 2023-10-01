@@ -414,6 +414,39 @@ const Sale = ({ editPurchase, type }) => {
                   onChange={(e) => setDate(e.target.value)}
                 />
               </Grid>
+              <Grid item xs={2} >
+                <label>Ref No : </label>
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  variant="standard"
+                  fullWidth
+                  required
+                  name='refNo'
+                  error={refError}
+                  type='text'
+                  placeholder="Enter Ref No"
+                  value={refNo}
+                  onChange={(e) => setRefNo(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={3} sx={{ textAlign: 'center' }} >
+                <label>Ref Date : </label>
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  fullWidth
+                  variant="standard"
+                  required
+                  name='date'
+                  error={refDateError}
+                  type='date'
+                  label='Ref Date'
+                  placeholder='Ref Date'
+                  value={refDate}
+                  onChange={(e) => setRefDate(e.target.value)}
+                />
+              </Grid>
               <Grid item xs={2}>
                 <label>Party : </label>
               </Grid>
@@ -489,39 +522,7 @@ const Sale = ({ editPurchase, type }) => {
                   onChange={(e) => setContactNo(e.target.value)}
                 />
               </Grid>
-              <Grid item xs={3} sx={{ textAlign: 'center' }}>
-                <label>Ref No : </label>
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  variant="standard"
-                  fullWidth
-                  required
-                  name='refNo'
-                  error={refError}
-                  type='text'
-                  placeholder="Enter Ref No"
-                  value={refNo}
-                  onChange={(e) => setRefNo(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={2} >
-                <label>Ref Date : </label>
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  fullWidth
-                  variant="standard"
-                  required
-                  name='date'
-                  error={refDateError}
-                  type='date'
-                  label='Ref Date'
-                  placeholder='Ref Date'
-                  value={refDate}
-                  onChange={(e) => setRefDate(e.target.value)}
-                />
-              </Grid>
+
               <Grid item xs={12}>
                 <Divider><Typography variant='subtitle1' >Add products</Typography></Divider>
               </Grid>
@@ -566,14 +567,14 @@ const Sale = ({ editPurchase, type }) => {
                             </TableCell>
                             <TableCell key={data.id} align="left">
                               {productMaster.filter(c => c._id === p.productId)[0]?.name} <br />
-                              {p.printableDesc}
+                              <div style={{ color: '#0077d1' }}>{p.printableDesc}</div>
                             </TableCell>
                             <TableCell key={data.id} align="left">
                               {productMaster.filter(c => c._id === p.productId)[0]?.size}
                             </TableCell>
                             <TableCell key={data.id} align="left">
                               {p.quantity} <br />
-                              {p.printableQty}
+                              <div style={{ color: '#0077d1' }}>{p.printableQty}</div>
                             </TableCell>
                             <TableCell key={data.id} align="left">
                               <MdModeEditOutline color="#9155FD" size="20px" style={{ cursor: "pointer" }} onClick={() => deleteSizeQuantity("index")} />

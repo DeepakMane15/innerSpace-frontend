@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
 
   // baseURL: 'http://16.171.39.169:3100'
 
-  baseURL: 'https://api.inventorysolutions.in'
+  baseURL: 'https://api.inventorysolutions.in/api'
 
 })
 

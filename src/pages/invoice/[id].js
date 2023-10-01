@@ -164,22 +164,18 @@ const Detail = (props) => {
                     <TableHead>
                       <TableRow>
                         <TableCell align="left" sx={{ minWidth: 100 }}>
-                          Name
+                          Category
+                        </TableCell>
+                        <TableCell align="left" sx={{ minWidth: 100 }}>
+                          Name <br />
+                          Printable Name
                         </TableCell>
                         <TableCell align="left" sx={{ minWidth: 100 }}>
                           Code
                         </TableCell>
                         <TableCell align="left" sx={{ minWidth: 100 }}>
-                          Category
-                        </TableCell>
-                        <TableCell align="left" sx={{ minWidth: 100 }}>
-                          Sub-Category
-                        </TableCell>
-                        <TableCell align="left" sx={{ minWidth: 100 }}>
-                          Size
-                        </TableCell>
-                        <TableCell align="left" sx={{ minWidth: 100 }}>
-                          Quantity
+                          Quantity <br/>
+                          Printable Qty
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -189,22 +185,18 @@ const Detail = (props) => {
 
                         <TableRow hover role='checkbox' tabIndex={-1} key={p._id}>
                           <TableCell key={data._id} align="left">
-                            {p?.productId?.name}
+                            {p?.productId?.subCategoryId?.categoryId?.name}
+                          </TableCell>
+                          <TableCell key={data.id} align="left">
+                            {p?.productId?.name} {p?.productId?.size} <br />
+                            <div style={{ color: '#0077d1' }}>{p?.printableDesc}</div>
                           </TableCell>
                           <TableCell key={data.id} align="left">
                             {p?.productId?.code}
                           </TableCell>
                           <TableCell key={data.id} align="left">
-                            {p?.productId?.subCategoryId?.categoryId?.name}
-                          </TableCell>
-                          <TableCell key={data.id} align="left">
-                            {p?.productId?.subCategoryId?.name}
-                          </TableCell>
-                          <TableCell key={data.id} align="left">
-                            {p?.productId?.size}
-                          </TableCell>
-                          <TableCell key={data.id} align="left">
-                            {p?.quantity}
+                            {p?.quantity} <br />
+                            <div style={{ color: '#0077d1' }}>{p?.printableQty}</div>
                           </TableCell>
 
                         </TableRow>

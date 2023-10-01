@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 
 // const prodUrl = 'http://16.171.39.169:3100/users/signin'
 
-const prodUrl = 'https://api.inventorysolutions.in/users/signin'
+const prodUrl = 'https://api.inventorysolutions.in/api/users/signin'
 
 
 
