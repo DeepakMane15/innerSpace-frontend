@@ -130,7 +130,7 @@ const Purchase = () => {
 
       const challan = allInvoices.filter(invoice => invoice.id === invoiceId);
 
-      const response = await axios.post(window.location.protocol + '//' + window.location.host + '/api/user', { challan }, {
+      const response = await axiosInstance.post("transaction/download-invoice", { challan }, {
         responseType: 'arraybuffer',
       });
 
