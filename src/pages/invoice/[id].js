@@ -71,18 +71,19 @@ const Detail = (props) => {
           <Button variant="outlined" onClick={() => router.push('/invoice')}>
             Go Back
           </Button>
-          <CardHeader title={'Invoice Details - ' + data?.id} titleTypographyProps={{ variant: 'h6' }} />
+          <CardHeader title={(
+            <div style={{ display: 'flex', spacing: 2 }}>
+              <div>
+                Invoice Details -   {data?.id}
+              </div>
+              <div style={{ marginLeft: '290px' }}>
+                Type -  {data?.type}
+              </div>
+            </div>
+          )} titleTypographyProps={{ variant: 'h6' }} />
           <CardContent>
-            <Grid container spacing={2}>
-              <Grid item xs={6} sm={2} sx={{ display: 'flex', alignItems: 'left' }}>
-                <Typography>Date : </Typography>
-              </Grid>
-              <DemoGrid item xs={6} sm={4}>
-                <Typography variant='subtitle1' sx={{ marginBottom: 2, alignItems: 'left' }}>
-                  {data?.invoiceDate?.slice(0, 10)}
-                </Typography>
-              </DemoGrid>
 
+            <Grid container spacing={2}>
               <Grid item xs={6} sm={2} sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography>Invoice No. :</Typography>
               </Grid>
@@ -91,16 +92,30 @@ const Detail = (props) => {
                   {data?.id}
                 </Typography>
               </DemoGrid>
-
-              <Grid item xs={12} sm={2} sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography>Type :</Typography>
+              <Grid item xs={6} sm={2} sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography>Ref No. :</Typography>
               </Grid>
-              <DemoGrid item xs={12} sm={10}>
+              <DemoGrid item xs={6} sm={4}>
                 <Typography variant='subtitle1' sx={{ marginBottom: 2 }}>
-                  {data?.type}
+                  {data?.refNo}
                 </Typography>
               </DemoGrid>
-
+              <Grid item xs={6} sm={2} sx={{ display: 'flex', alignItems: 'left' }}>
+                <Typography>Date : </Typography>
+              </Grid>
+              <DemoGrid item xs={6} sm={4}>
+                <Typography variant='subtitle1' sx={{ marginBottom: 2, alignItems: 'left' }}>
+                  {data?.invoiceDate?.slice(0, 10)}
+                </Typography>
+              </DemoGrid>
+              <Grid item xs={6} sm={2} sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography>Ref Date :</Typography>
+              </Grid>
+              <DemoGrid item xs={6} sm={4}>
+                <Typography variant='subtitle1' sx={{ marginBottom: 2 }}>
+                  {data?.refDate?.slice(0, 10)}
+                </Typography>
+              </DemoGrid>
               <Grid item xs={6} sm={2} sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography>Party Name :</Typography>
               </Grid>
@@ -109,7 +124,6 @@ const Detail = (props) => {
                   {data?.clientName?.name}
                 </Typography>
               </DemoGrid>
-
               <Grid item xs={6} sm={2} sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography>Contact No :</Typography>
               </Grid>
@@ -150,13 +164,16 @@ const Detail = (props) => {
                     <TableHead>
                       <TableRow>
                         <TableCell align="left" sx={{ minWidth: 100 }}>
-                          Category
+                          Name
                         </TableCell>
                         <TableCell align="left" sx={{ minWidth: 100 }}>
                           Code
                         </TableCell>
                         <TableCell align="left" sx={{ minWidth: 100 }}>
-                          Name
+                          Category
+                        </TableCell>
+                        <TableCell align="left" sx={{ minWidth: 100 }}>
+                          Sub-Category
                         </TableCell>
                         <TableCell align="left" sx={{ minWidth: 100 }}>
                           Size
@@ -172,13 +189,16 @@ const Detail = (props) => {
 
                         <TableRow hover role='checkbox' tabIndex={-1} key={p._id}>
                           <TableCell key={data._id} align="left">
-                            {p?.productId?.subCategoryId?.categoryId?.name}
+                            {p?.productId?.name}
                           </TableCell>
                           <TableCell key={data.id} align="left">
                             {p?.productId?.code}
                           </TableCell>
                           <TableCell key={data.id} align="left">
-                            {p?.productId?.name}
+                            {p?.productId?.subCategoryId?.categoryId?.name}
+                          </TableCell>
+                          <TableCell key={data.id} align="left">
+                            {p?.productId?.subCategoryId?.name}
                           </TableCell>
                           <TableCell key={data.id} align="left">
                             {p?.productId?.size}

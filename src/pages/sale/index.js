@@ -354,7 +354,8 @@ const Sale = ({ editPurchase, type }) => {
       data['printableQty'] = "";
     } else {
       data['customiseDesc'] = true;
-      data['printableDesc'] = productMaster.filter(p => p._id === data['productId'])[0]?.name;
+      let productDetail = productMaster.filter(p => p._id === data['productId'])[0];
+      data['printableDesc'] = productDetail?.name + ' ' + productDetail?.size;
       data['printableQty'] = data['quantity'];
     }
     setNewProduct(data);

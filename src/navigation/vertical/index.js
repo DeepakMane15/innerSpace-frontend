@@ -24,6 +24,16 @@ const navigation = () => {
     //   path: '/account-settings'
     // },
     {
+      title: 'Purchase',
+      icon: Table,
+      path: '/purchase'
+    },
+    {
+      title: 'Sale',
+      icon: Table,
+      path: '/sale'
+    },
+    {
       title: 'Invoice',
       icon: Table,
       path: '/invoice'
@@ -34,17 +44,7 @@ const navigation = () => {
       path: '/stock-details'
     },
 
-    {
-      title: 'Purchase',
-      icon: Table,
-      path: '/purchase'
-    },
 
-    {
-      title: 'Sale',
-      icon: Table,
-      path: '/sale'
-    },
     {
       sectionTitle: 'Masters'
     },
