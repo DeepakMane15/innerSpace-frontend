@@ -15,6 +15,7 @@ export default async function handler(req, res) {
   console.log(challan[0]);
   try {
 
+
     const products = challan.map((product, index) => (
       ` <tr key=${index}>
           <td style="text-align: center;">
@@ -34,6 +35,7 @@ export default async function handler(req, res) {
         </tr>
         `
     ))
+
 
     function formatAddress(address) {
       let lines = address.split(', ');
@@ -204,7 +206,7 @@ export default async function handler(req, res) {
           <br>
           ${clientAddress}
           <br>
-          <span class="bold">Contact Person : ${challan[0].contactNo}</span>
+          <span class="bold">Contact Person : Mr Akhilesh Sharma- ${challan[0].contactNo}</span>
           <br>
           <span class="bold"> GSTIN.:${challan[0].gstNo}</span>
           <br>
@@ -227,8 +229,10 @@ export default async function handler(req, res) {
               : ${moment(challan[0].invoiceDate).format("DD/MM/YYYY")}
             </div>
           </div>
+          ${challan[0].type === 'sell' && (
+        <>
           <div style="display: flex; ">
-            <div class="bold" style="width: 100px;">
+            <div className="bold" style="width: 100px;">
               Ref No.
             </div>
             <div>
@@ -237,14 +241,15 @@ export default async function handler(req, res) {
           </div>
 
           <div style="display: flex; ">
-            <div class="bold" style="width: 100px;">
+            <div className="bold" style="width: 100px;">
               Date
             </div>
             <div>
               : ${moment(challan[0].refDate).format("DD/MM/YYYY")}
             </div>
           </div>
-
+        </>
+      )}
         </div>
       </div>
       <!-- sr table columns -->
